@@ -4,14 +4,16 @@ import * as cors from 'cors';
 
 import { requestLoggerMiddleware } from "./middleware/request-logger.middleware";
 import { Controller } from "./common/interface/controller.interface";
+import { Db } from "mongodb";
 
 
 class App {
     public app: express.Application;
     public port: number;
     
-    constructor(port: number, controllers: Controller[]) {
+    constructor(port: number, controllers: Controller[], db: Db) {
         this.app = express();
+        this.app.locals.db = db;
         this.port = port;
 
         this._initializeMiddleWares();
