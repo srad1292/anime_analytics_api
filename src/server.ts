@@ -2,6 +2,9 @@ import * as glob from "glob";
 import { Environment } from "./utils/validate-env";
 import { Controller } from "./common/interface/controller.interface";
 import App from "./app";
+import { Database } from "./common/database/Database";
+import { request } from "express";
+import { Db } from "mongodb";
 
 Environment.validateEnv();
 
@@ -9,7 +12,7 @@ console.log("Starting Server: ");
 let controllers: Controller[] = [];
 
 
-async function setUpApp() { 
+async function setUpApp(db: Db) { 
     await glob("src/modules/routed/**/*.controller.ts", async(error: Error, paths: String[]) => {
         for(let path of paths) {
             const file: string = path.toString().replace(/^src/, ".");
@@ -24,10 +27,19 @@ async function setUpApp() {
             }
         }    
         
-        const app = new App(Environment.environment.PORT, controllers);
+        const app = new App(Environment.environment.PORT, controllers, db);
         app.listen();
         
     });
 }
 
-setUpApp();
+async function main() {
+    try {
+        const db: Db = await Database.setUpInstance();
+        setUpApp(db);
+    } catch(error) {
+        throw(error);
+    }
+}
+
+main();
