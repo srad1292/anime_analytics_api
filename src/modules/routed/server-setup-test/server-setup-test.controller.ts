@@ -2,6 +2,8 @@ import { Router as ExpressRouter, Request, Response, response } from 'express';
 
 import { Controller } from "../../../common/interface/controller.interface";
 import ServerSetupTestDao from './dao/server-setup-test.dao';
+import { TestDocDto } from './dto/test-doc.dto';
+import { ValidateBody } from '../../../common/decorators/validate.decorator';
 
 
 class ServerSetupTestController implements Controller {
@@ -16,17 +18,17 @@ class ServerSetupTestController implements Controller {
 
     setupRoutes() {
         this.router.get('/', this.getControllerTest);
-        this.router.post('/test-mongo-connection', this.createMongoDocument);
+        this.router.post('/test-mongo-connection', this.createMongoDocument.bind(this));
     }
 
     getControllerTest = async(request: Request, response: Response) => {
         response.status(200).send({message: "Controller imported successfully"});
     }
 
-    createMongoDocument = async(request: Request, response: Response) => {
+    @ValidateBody(TestDocDto)
+    async createMongoDocument(request: Request, response: Response) {
         try {
             const document = await this.serverSetupDao.createMongoDocument(request.body);
-            console.log({boop: 'beep', document});
             response.status(200).send(document);
         } catch(error) {
             console.log({error});

@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from 'cors';
-
+import 'reflect-metadata';
 import { requestLoggerMiddleware } from "./middleware/request-logger.middleware";
 import { Controller } from "./common/interface/controller.interface";
 import { Db } from "mongodb";
