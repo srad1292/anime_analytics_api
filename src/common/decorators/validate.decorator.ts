@@ -1,5 +1,5 @@
 
-import {validate, ValidationError} from "class-validator";
+import {validate, ValidationError, ValidatorOptions} from "class-validator";
 import {plainToClass} from "class-transformer";
 
 function validationFactory<T>(metadataKey: Symbol, model: { new (...args: any[]): T}, source: "body" | "query"): any {
@@ -12,8 +12,17 @@ function validationFactory<T>(metadataKey: Symbol, model: { new (...args: any[])
 
         const method = descriptor.value;
         descriptor.value = async function (request, response, next) {
+
             const model = Reflect.getOwnMetadata(metadataKey, target, propertyName);
-            const errors = await validate(plainToClass(model, request[source]));
+            const instance = plainToClass(model, request[source]);
+            const validateOptions: ValidatorOptions = {
+                forbidUnknownValues: true,
+                whitelist: true,
+                forbidNonWhitelisted: true,
+            };
+
+            const errors = await validate(instance, validateOptions);
+
             if (errors.length > 0) {
                 const formattedErrors = transformValidationErrorsToJSON(errors);
                 const errorResponse = {
