@@ -1,8 +1,9 @@
-import { Db, AggregationCursor } from "mongodb";
+import { Db, AggregationCursor, FindOneOptions } from "mongodb";
 
 import { Database } from "../../../../common/database/Database";
 import { DatabaseCollection } from "../../../../common/database/DatabaseCollection.enum";
 import { AnimeRatingDto } from "../../anime/dto/anime-rating.dto";
+import { RatingEdge } from "../enums/rating-edge.enum";
 
 export class GetOverviewDao {
 
@@ -49,5 +50,88 @@ export class GetOverviewDao {
         });
 
         return response;
+    }
+
+    async getRatedList(edge: RatingEdge, paginationOptions: any = {}) {
+        let ratedResponse = {
+            count: 0,
+            data: []
+        };
+        
+        const edgeRating = await this._getEdgeRating(edge);
+        if(!edgeRating) { return ratedResponse; }
+
+        const count = await this.db.collection(DatabaseCollection.CompletedAnime)
+            .countDocuments({animeListScore: edgeRating})
+            .then(count => {
+                return count;
+            });
+                
+        const options: FindOneOptions = this._getRatedListOptions(paginationOptions);        
+
+        const edgeRatedQuery = this.db.collection(DatabaseCollection.CompletedAnime)
+            .find({animeListScore: edgeRating}, options).sort({animeListScore:-1, title: 1});
+
+        const edgeRated = await edgeRatedQuery.toArray().then(data => {
+            return data;
+        });
+
+        return {
+            rating: edgeRating,
+            count,
+            data: edgeRated
+        };
+    }
+
+    private async _getEdgeRating(edge: RatingEdge) {
+        const edgeRatingOptions: FindOneOptions = this._getEdgeRatingOptions();
+        const order = edge === RatingEdge.Max ? -1 : 1;
+        const query = edge === RatingEdge.Max ? {} : { animeListScore : { $gt: 0}}; 
+
+        const edgeRatingQuery = await this.db
+            .collection(DatabaseCollection.CompletedAnime)
+            .find(query, edgeRatingOptions)
+            .sort({ animeListScore: order });
+
+        return await edgeRatingQuery.toArray().then(ratings => {
+            if (!ratings || ratings.length < 1) {
+                return null;
+            }
+            return ratings[0].animeListScore;
+        });
+    }
+
+    private _getRatedListOptions(paginationOptions: any = {}): FindOneOptions {
+        let options: FindOneOptions = {
+            projection: {
+                title: 1,
+                titleEnglish: 1,
+                url: 1,
+                trailerUrl: 1,
+                episodes: 1,
+                animeListFinishedDate: 1,
+                score: 1
+            }
+        };
+
+        if(paginationOptions.paginate === "true") {
+            const records = parseInt(paginationOptions.records);
+            const page = parseInt(paginationOptions.page);
+            const offset = (page-1) * records;
+
+            options.limit = records;
+            options.skip = offset;
+        }
+
+        return options;
+    }
+
+    private _getEdgeRatingOptions(): FindOneOptions {
+        return {
+            limit: 1,
+            projection: {
+                animeListScore: 1 
+            }
+        };
     }
 }
