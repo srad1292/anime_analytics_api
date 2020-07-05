@@ -41,6 +41,7 @@ class GetOverviewController implements Controller {
         }
     }
 
+    @ValidateQuery(PaginationOptionsQuery)
     async getLowestRated(request: Request, response: Response) {
         try {
             const paginationOptions = request.query;
