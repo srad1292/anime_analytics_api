@@ -26,9 +26,14 @@ export class GetOverviewDao {
             averageRating: 0,
             countsByRating: [],
         };
-        await countsByRatingCursor.toArray().then(countsByRating => {
+        await countsByRatingCursor.toArray().then(dbCountsByRating => {
             let sum = 0;
-            countsByRating = countsByRating.map(count => {
+
+            let countsByRating = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(score => {
+                return {score, count: 0};
+            });
+
+            dbCountsByRating.forEach(count => {
                 count.score = count._id;
                 delete count._id; 
 
@@ -39,7 +44,7 @@ export class GetOverviewDao {
                     sum += (count.score * count.count);
                 }
 
-                return count;
+                countsByRating[count.score] = {score: count.score, count: count.count};
             });
 
             response.countsByRating = countsByRating;
