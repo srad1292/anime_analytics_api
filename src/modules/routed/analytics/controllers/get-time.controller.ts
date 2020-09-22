@@ -14,11 +14,22 @@ class GetTimeController implements Controller {
 
     setupRoutes() {
         this.router.get('/finished-date', this.getFinishedDateAnalytics);
+        this.router.get('/start-air-date', this.getStartedAiringDateAnalytics);
     }
 
     async getFinishedDateAnalytics(request: Request, response: Response) {
         try {
             const data = await getTimeService.getFinishedDateAnalytics();
+            response.status(200).send(data);
+        } catch(error) {
+            console.log({error});
+            response.status(400).send({error: "some error occurred"});
+        }
+    }
+
+    async getStartedAiringDateAnalytics(request: Request, response: Response) {
+        try {
+            const data = await getTimeService.getStartedAiringDateAnalytics();
             response.status(200).send(data);
         } catch(error) {
             console.log({error});
