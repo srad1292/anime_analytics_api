@@ -1,10 +1,10 @@
 import { IsArray, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
-import { AnimeDto } from "./anime.dto";
+import { AnimeRatingDto } from "./anime-rating.dto";
 
-export class BulkAnimeDto {
+export class BulkAnimeRatingDto {
     @IsArray()
     @ValidateNested({each: true})
-    @Type(() => AnimeDto)
-    anime: AnimeDto[];
+    @Type(() => AnimeRatingDto)
+    anime: AnimeRatingDto[];
 }

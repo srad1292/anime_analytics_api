@@ -3,8 +3,8 @@ import { Router as ExpressRouter, Request, Response, response } from 'express';
 import { Controller } from "../../../../common/interface/controller.interface";
 import { createAnimeService } from "../service/index";
 import { ValidateBody } from '../../../../common/decorators/validate.decorator';
-import { BulkAnimeDto } from '../dto/bulk-anime.dto';
-import { AnimeDto } from '../dto/anime.dto';
+import { BulkAnimeRatingDto } from '../dto/bulk-anime.dto';
+import { AnimeRatingDto } from '../dto/anime-rating.dto';
 
 class CreateAnimeController implements Controller {
     public path: string = '/anime';
@@ -19,10 +19,10 @@ class CreateAnimeController implements Controller {
         this.router.post('/bulk', this.bulkCreateAnime);
     }
 
-    @ValidateBody(AnimeDto)
+    @ValidateBody(AnimeRatingDto)
     async createAnime(request: Request, response: Response) {
         try {
-            const anime = request.body as AnimeDto;
+            const anime = request.body as AnimeRatingDto;
             const document = await createAnimeService.createAnime(anime);
             response.status(201).send(document);
         } catch(error) {
@@ -31,10 +31,10 @@ class CreateAnimeController implements Controller {
         }
     }
 
-    @ValidateBody(BulkAnimeDto)
+    @ValidateBody(BulkAnimeRatingDto)
     async bulkCreateAnime(request: Request, response: Response) {
         try {
-            const document = await createAnimeService.bulkCreateAnime(request.body as BulkAnimeDto);
+            const document = await createAnimeService.bulkCreateAnime(request.body as BulkAnimeRatingDto);
             response.status(201).send(document);
         } catch(error) {
             console.log({error});

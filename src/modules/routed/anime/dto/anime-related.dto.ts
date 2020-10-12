@@ -6,55 +6,56 @@ export class AnimeRelatedDto {
     @ValidateNested({each: true})
     @Type(() => MalItemDto)
     @IsOptional()
-    adaptation: MalItemDto;
+    adaptation: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    alternativeSetting: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    alternativeVersion: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    character: MalItemDto[];
     
     @ValidateNested({each: true})
     @Type(() => MalItemDto)
     @IsOptional()
-    other: MalItemDto;
+    other: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    parentStory: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    prequel: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    sequel: MalItemDto[];
+
+    @ValidateNested({each: true})
+    @Type(() => MalItemDto)
+    @IsOptional()
+    sideStory: MalItemDto[];
     
     @ValidateNested({each: true})
     @Type(() => MalItemDto)
     @IsOptional()
-    summary: MalItemDto;
-    
+    spinOff: MalItemDto[];
+
     @ValidateNested({each: true})
     @Type(() => MalItemDto)
     @IsOptional()
-    sequel: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    spinOff: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    prequel: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    alternativeVersion: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    sideStory: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    alternativeSetting: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    parentStory: MalItemDto;
-    
-    @ValidateNested({each: true})
-    @Type(() => MalItemDto)
-    @IsOptional()
-    character: MalItemDto;
+    summary: MalItemDto[];
+
 }

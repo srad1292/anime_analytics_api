@@ -1,6 +1,7 @@
 import { IsNumber, IsString, IsISO8601 } from "class-validator"
+import { AnimeDto } from "./anime.dto";
 
-export class AnimeRatingDto {
+export class AnimeRatingDto extends AnimeDto {
     
     @IsNumber()
     animeListStatus: number;

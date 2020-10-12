@@ -1,8 +1,8 @@
 import { Db } from "mongodb";
 import { Database } from "../../../../common/database/Database";
 import { DatabaseCollection } from "../../../../common/database/DatabaseCollection.enum";
-import { BulkAnimeDto } from "../dto/bulk-anime.dto";
-import { AnimeDto } from "../dto/anime.dto";
+import { AnimeRatingDto } from "../dto/anime-rating.dto";
+import { BulkAnimeRatingDto } from "../dto/bulk-anime.dto";
 
 class CreateAnimeDao {
     public db: Db;
@@ -11,7 +11,7 @@ class CreateAnimeDao {
         this.db = Database.getInstance();
     }
 
-    async createAnime(anime: AnimeDto) {
+    async createAnime(anime: AnimeRatingDto) {
         let document = await this.db.collection(DatabaseCollection.CompletedAnime).insertOne(anime)
         .then(data => {
             console.log({data});
@@ -21,8 +21,8 @@ class CreateAnimeDao {
         return document;
     }
 
-    async bulkCreateAnime(bulkAnime: BulkAnimeDto) {
-        const anime: AnimeDto[] = bulkAnime.anime;
+    async bulkCreateAnime(bulkAnime: BulkAnimeRatingDto) {
+        const anime: AnimeRatingDto[] = bulkAnime.anime;
         let documents = await this.db.collection(DatabaseCollection.CompletedAnime).insertMany(anime)
         .then(data => {
             console.log({data});
