@@ -2,6 +2,8 @@ import { SearchAnimeDto } from "../dto/search-anime.dto";
 import { AnimeSearchItem } from "../models/anime-search-list.interface";
 import { AnimeDto } from "../dto/anime.dto";
 import { MalItemDto } from "../dto/mal-item.dto";
+import { AnimeRatingDto } from "../dto/anime-rating.dto";
+import { getAnimeDao } from "../dao";
 const axios = require('axios');
 
 class GetAnimeService {
@@ -44,8 +46,14 @@ class GetAnimeService {
         return response;
     }
 
-    async getAnime(animeId: number) {
-        const anime = await axios.get(`https://api.jikan.moe/v3/anime/${animeId}`)
+    async getAnime(animeId: number): Promise<AnimeRatingDto[]> {
+        let ratings = await getAnimeDao.getAnime(animeId);
+
+        if(ratings && ratings.length > 0) {
+            return ratings;
+        }
+        
+        let anime: AnimeRatingDto = await axios.get(`https://api.jikan.moe/v3/anime/${animeId}`)
         .then(anime => {
             console.log(anime);
             if(anime && anime.data) {
@@ -59,7 +67,16 @@ class GetAnimeService {
             throw(error);
         });
 
-        return anime;
+        if(anime == null) {
+            return [];
+        }
+
+        anime.ratingId = null;
+        anime.animeListStatus = null;
+        anime.animeListStatusName = null;
+        anime.animeListScore = null;
+        anime.animeListFinishedDate = null;
+        return [anime];
     }
 
     private _animeToDto(anime: any): AnimeDto {
