@@ -3,9 +3,8 @@ import { Type } from "class-transformer";
 import { AnimeAiredDto } from "./anime-aired.dto";
 import { MalItemDto } from "./mal-item.dto";
 import { AnimeRelatedDto } from "./anime-related.dto";
-import { AnimeRatingDto } from "./anime-rating.dto";
 
-export class AnimeDto extends AnimeRatingDto {
+export class AnimeDto {
 
     @IsNumber()
     malId: Number;
