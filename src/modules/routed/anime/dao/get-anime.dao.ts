@@ -16,7 +16,6 @@ class GetAnimeDao {
         .find({malId: {$eq: animeId}})
         .toArray()
         .then(data => {
-            console.log(data);
             if(!data || data.length === 0) {
                 return [];
             }
@@ -31,8 +30,6 @@ class GetAnimeDao {
         }).catch(error => {
             return [];
         });
-        console.log("returning anime");
-        console.log(anime);
         return anime;
     }
 

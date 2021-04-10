@@ -103,7 +103,7 @@ class GetAnimeService {
             scoredBy: anime.scored_by,
             rank: anime.rank,
             popularity: anime.popularity,
-            members: anime.member,
+            members: anime.members,
             favorites: anime.favorites,
             synopsis: anime.synopsis,
             background: anime.background,
