@@ -18,6 +18,14 @@ export class AnimeDto {
 
     @IsString() 
     @IsOptional()
+    jpgImageUrl?: string;
+
+    @IsString() 
+    @IsOptional()
+    webpImageUrl?: string;
+
+    @IsString() 
+    @IsOptional()
     trailerUrl?: string;
 
     @IsString() 

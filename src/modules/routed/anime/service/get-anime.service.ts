@@ -11,10 +11,10 @@ class GetAnimeService {
     constructor() {}
 
     async searchAnime(searchAnime: SearchAnimeDto) {
-        const response = await axios.get(`https://api.jikan.moe/v3/search/anime?q=${searchAnime.title}&page=${searchAnime.page}`)
+        const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${searchAnime.title}&page=${searchAnime.page}`)
         .then(animeFound => {
-            if(animeFound && animeFound.data && animeFound.data.results) {
-                const anime: AnimeSearchItem[] = animeFound.data.results.map(item => {
+            if(animeFound && animeFound.data && animeFound.data.data) {
+                const anime: AnimeSearchItem[] = animeFound.data.data.map(item => {
                     return {
                         malId: item.mal_id,
                         url: item.url,
@@ -53,11 +53,17 @@ class GetAnimeService {
             return ratings;
         }
         
-        let anime: AnimeRatingDto = await axios.get(`https://api.jikan.moe/v3/anime/${animeId}`)
+        let anime: AnimeRatingDto = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
         .then(anime => {
-            console.log(anime);
-            if(anime && anime.data) {
-                const animeResponse = this._animeToDto(anime.data);
+            // console.log(anime);
+            if(anime) { console.log("Found anime");}
+            if(anime.data) { console.log("anime has data");}
+            if(anime.data.data) { console.log("anime data has data");}
+            
+            if(anime && anime.data && anime.data.data) {
+                const animeResponse = this._animeToDto(anime.data.data);
+                console.log("Here is your response");
+                console.log(animeResponse);
                 return animeResponse
             } else {
                 return null;
@@ -85,7 +91,8 @@ class GetAnimeService {
         return {
             malId: anime.mal_id,
             url: anime.url,
-            imageUrl: anime.image_url,
+            jpgImageUrl: anime.images?.jpg?.image_url ?? '',
+            webpImageUrl: anime.images?.webp?.image_url ?? '',
             trailerUrl: anime.trailer_url,
             title: anime.title,
             titleEnglish: anime.title_english,
@@ -108,7 +115,7 @@ class GetAnimeService {
             synopsis: anime.synopsis,
             background: anime.background,
             premiered: anime.premiered,
-            broadcast: anime.broadcast,
+            broadcast: anime.broadcast?.string ?? '',
             related: {
                 adaptation: this._mapMalItemToDto(related.Adaptation),
                 alternativeSetting: this._mapMalItemToDto(related['Alternative setting']),
@@ -126,8 +133,8 @@ class GetAnimeService {
             licensors: this._mapMalItemToDto(anime.licensors),
             studios: this._mapMalItemToDto(anime.studios),
             genres: this._mapMalItemToDto(anime.genres),
-            openingThemes: anime.opening_themes,
-            endingThemes: anime.ending_themes
+            openingThemes: [''],//anime.opening_themes,
+            endingThemes: [''],//anime.ending_themes
         };
     }
 
